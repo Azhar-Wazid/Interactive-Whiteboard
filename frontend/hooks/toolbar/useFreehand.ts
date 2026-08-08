@@ -1,13 +1,17 @@
 import { useState, useRef } from "react";
 import { KonvaEventObject } from "konva/lib/Node";
+import { ToolHandlers } from "@/types/whiteboard";
+import type { ToolProps } from "@/types/whiteboard"
 
-type Line ={
-  tool: string
+type Line = {
+  tool: "pen" | "eraser"
   points: number[]
 };
+type FreehandTool = ToolHandlers & {
+  lines: Line[]
+}
 
-export default function useFreeDrawingTool(){
-  const [tool, setTool] = useState('pen');
+export default function useFreeDrawingTool(tool: "pen" | "eraser"): FreehandTool{
   const [lines, setLines] = useState<Line[]>([]);
   const isDrawing = useRef(false);
 
