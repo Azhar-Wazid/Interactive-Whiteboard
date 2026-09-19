@@ -1,17 +1,13 @@
 import { useState, useRef } from "react";
 import { KonvaEventObject } from "konva/lib/Node";
 import { ToolHandlers } from "@/types/whiteboard";
-import type { ToolProps } from "@/types/whiteboard"
+import type { ToolProps, Line } from "@/types/whiteboard"
 
-type Line = {
-  tool: "pen" | "eraser"
-  points: number[]
-};
-type FreehandTool = ToolHandlers & {
-  lines: Line[]
-}
 
-export default function useFreeDrawingTool(tool: "pen" | "eraser"): FreehandTool{
+
+
+
+export default function useFreeDrawingTool(tool: "pen" | "eraser"): ToolHandlers{
   const [lines, setLines] = useState<Line[]>([]);
   const isDrawing = useRef(false);
 
@@ -44,8 +40,9 @@ export default function useFreeDrawingTool(tool: "pen" | "eraser"): FreehandTool
     isDrawing.current = false;
   };
 
+  console.log(lines)
+
   return {
-    lines,
     onMouseDown: handleMouseDown,
     onMouseMove: handleMouseMove,
     onMouseUp: handleMouseUp

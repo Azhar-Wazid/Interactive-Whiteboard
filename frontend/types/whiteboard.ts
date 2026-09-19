@@ -12,3 +12,8 @@ export type ToolHandlers = {
     onMouseMove: (e: KonvaEventObject<MouseEvent>) => void;
     onMouseUp: (e: KonvaEventObject<MouseEvent>) => void;
 }
+
+export type Line = {
+  tool: "pen" | "eraser"
+  points: number[]
+};

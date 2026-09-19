@@ -55,6 +55,7 @@ export default function Canvas({ tool }: CanvasProps) {
               }
           />
         ))}
+
         <Rect
           x={100}
           y={100}
