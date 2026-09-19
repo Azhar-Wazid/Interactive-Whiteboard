@@ -4,19 +4,16 @@ import { ToolHandlers } from "@/types/whiteboard";
 import type { ToolProps, Line } from "@/types/whiteboard"
 
 
-
-
-
 export default function useFreeDrawingTool(tool: "pen" | "eraser"): ToolHandlers{
-  const [lines, setLines] = useState<Line[]>([]);
+  const currentLine = useState<Line | null>(null);
   const isDrawing = useRef(false);
 
   const handleMouseDown = (e: KonvaEventObject<MouseEvent>) => {
-    isDrawing.current = true;
     const stage = e.target.getStage();
     if(!stage) return;
     const pos = stage.getPointerPosition();
     if(!pos) return;
+    isDrawing.current = true;
     setLines([...lines, { tool, points: [pos.x, pos.y] }]);
   };
 
