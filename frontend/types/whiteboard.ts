@@ -14,6 +14,10 @@ export type ToolHandlers = {
 }
 
 export type Line = {
-  tool: "pen" | "eraser"
-  points: number[]
+    id: string
+    type: "line"
+    tool: "pen" | "eraser"
+    points: number[]
 };
+
+export type WhiteboardObject = Line;

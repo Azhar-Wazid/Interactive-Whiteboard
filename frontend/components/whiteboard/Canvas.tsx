@@ -1,8 +1,9 @@
 "use client";
+import { useState, useRef } from "react";
 import { Stage, Layer, Rect, Line } from "react-konva";
 import useWindowSize from "@/hooks/WindowResize"
 import useFreeDrawingTool from "@/hooks/toolbar/useFreehand";
-import { Tool, ToolHandlers } from "@/types/whiteboard";
+import { Tool, ToolHandlers, WhiteboardObject } from "@/types/whiteboard";
 
 type CanvasProps = {
   tool: Tool
@@ -10,8 +11,16 @@ type CanvasProps = {
 
 export default function Canvas({ tool }: CanvasProps) {
   const { winWidth, winHeight } = useWindowSize();
+  const [objects, setObjects] = useState<WhiteboardObject[]>([]);
+
+  const addObject = (object: WhiteboardObject) => {
+    setObjects((previousObjects) => [
+      ...previousObjects,
+      object,
+    ]);
+  };
   
-  const freehandTool = useFreeDrawingTool(tool === "eraser" ? "eraser" : "pen");
+  const freehandTool = useFreeDrawingTool(tool === "eraser" ? "eraser" : "pen", addObject);
   
   const tools: Record<Tool, ToolHandlers> = {
     select: {
@@ -33,6 +42,9 @@ export default function Canvas({ tool }: CanvasProps) {
 
   const activeTool = tools[tool];
 
+  console.log(objects)
+  
+
   return (
     <Stage 
       width={winWidth} 
@@ -42,6 +54,24 @@ export default function Canvas({ tool }: CanvasProps) {
       onMouseUp={activeTool.onMouseUp}
       >
       <Layer>
+        {objects.map((object) => {
+          if (object.type === "line") {
+            return(
+              <Line
+              key={object.id}
+              points={object.points}
+              stroke="white"
+              strokeWidth={5}
+              lineCap="round"
+              lineJoin="round"
+              globalCompositeOperation={
+                  object.tool === 'eraser' ? 'destination-out' : 'source-over'
+              }
+            />
+            )
+          }
+        })}
+
         {freehandTool.lines.map((line, i) => (
           <Line
             key={i}
@@ -51,19 +81,10 @@ export default function Canvas({ tool }: CanvasProps) {
             lineCap="round"
             lineJoin="round"
             globalCompositeOperation={
-                line.tool === 'eraser' ? 'destination-out' : 'source-over'
-              }
+              line.tool === 'eraser' ? 'destination-out' : 'source-over'
+            }
           />
         ))}
-
-        <Rect
-          x={100}
-          y={100}
-          width={200}
-          height={100}
-          fill="red"
-          draggable={tool === "select"}
-        />
       </Layer>
     </Stage>
   );
